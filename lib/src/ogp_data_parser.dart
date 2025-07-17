@@ -161,6 +161,18 @@ class OgpDataParser with BaseOgpDataParser {
   @override
   String? get twitterSite => _getContent(property: 'twitter:site');
 
+  /// Get article tags from 'article:tag' meta tags.
+  @override
+  List<String>? get articleTags => _getContentArray('article:tag');
+
+  /// Get video tags from 'video:tag' meta tags.
+  @override
+  List<String>? get videoTags => _getContentArray('video:tag');
+
+  /// Get book tags from 'book:tag' meta tags.
+  @override
+  List<String>? get bookTags => _getContentArray('book:tag');
+
   @override
   String toString() => parse().toString();
 
@@ -176,6 +188,16 @@ class OgpDataParser with BaseOgpDataParser {
         .firstWhere((element) => element?.attributes[attribute] == property,
             orElse: () => null)
         ?.attributes[key];
+  }
+
+  List<String>? _getContentArray(String propertyName) {
+    if (_document == null) return [];
+    return _document
+        ?.getElementsByTagName('meta')
+        .where((element) => element.attributes['property'] == propertyName)
+        .map((element) => element.attributes['content'])
+        .whereType<String>()
+        .toList();
   }
 }
 

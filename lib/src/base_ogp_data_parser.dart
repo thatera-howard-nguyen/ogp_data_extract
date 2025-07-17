@@ -38,6 +38,10 @@ mixin OgpDataKeys {
   static const keyFbAppId = 'fb:app_id';
   static const keyTwitterCard = 'twitter:card';
   static const keyTwitterSite = 'twitter:site';
+
+  static const keyArticleTag = 'article:tag';
+  static const keyBookTag = 'book:tag';
+  static const keyVideoTag = 'video:tag';
 }
 
 mixin BaseOgpDataParser {
@@ -80,6 +84,9 @@ mixin BaseOgpDataParser {
   String? fbAppId;
   String? twitterCard;
   String? twitterSite;
+  List<String>? articleTags;
+  List<String>? bookTags;
+  List<String>? videoTags;
 
   OgpData parse() {
     final OgpData o = OgpData();
@@ -122,6 +129,9 @@ mixin BaseOgpDataParser {
     o.fbAppId = fbAppId;
     o.twitterCard = twitterCard;
     o.twitterSite = twitterSite;
+    o.articleTags = articleTags;
+    o.bookTags = bookTags;
+    o.videoTags = videoTags;
     return o;
   }
 }
@@ -133,7 +143,7 @@ class OgpData with BaseOgpDataParser, OgpDataKeys {
     return toMap().toString();
   }
 
-  Map<String, String?> toMap() {
+  Map<String, dynamic> toMap() {
     return {
       OgpDataKeys.keyUrl: url,
       OgpDataKeys.keyType: type,
@@ -174,6 +184,9 @@ class OgpData with BaseOgpDataParser, OgpDataKeys {
       OgpDataKeys.keyFbAppId: fbAppId,
       OgpDataKeys.keyTwitterCard: twitterCard,
       OgpDataKeys.keyTwitterSite: twitterSite,
+      OgpDataKeys.keyArticleTag: articleTags,
+      OgpDataKeys.keyBookTag: bookTags,
+      OgpDataKeys.keyVideoTag: videoTags,
     };
   }
 
@@ -218,6 +231,17 @@ class OgpData with BaseOgpDataParser, OgpDataKeys {
     o.fbAppId = json[OgpDataKeys.keyFbAppId];
     o.twitterCard = json[OgpDataKeys.keyTwitterCard];
     o.twitterSite = json[OgpDataKeys.keyTwitterSite];
+
+    o.articleTags = (json[OgpDataKeys.keyArticleTag] as List?)
+        ?.map((e) => e.toString())
+        .toList();
+    o.bookTags = (json[OgpDataKeys.keyBookTag] as List?)
+        ?.map((e) => e.toString())
+        .toList();
+    o.videoTags = (json[OgpDataKeys.keyVideoTag] as List?)
+        ?.map((e) => e.toString())
+        .toList();
+
     return o;
   }
 
@@ -261,6 +285,9 @@ class OgpData with BaseOgpDataParser, OgpDataKeys {
     String? fbAppId,
     String? twitterCard,
     String? twitterSite,
+    List<String>? articleTags,
+    List<String>? bookTags,
+    List<String>? videoTags,
   }) {
     final OgpData o = OgpData();
     o.url = url ?? this.url;
@@ -302,6 +329,9 @@ class OgpData with BaseOgpDataParser, OgpDataKeys {
     o.fbAppId = fbAppId ?? this.fbAppId;
     o.twitterCard = twitterCard ?? this.twitterCard;
     o.twitterSite = twitterSite ?? this.twitterSite;
+    o.articleTags = articleTags ?? this.articleTags;
+    o.bookTags = bookTags ?? this.bookTags;
+    o.videoTags = videoTags ?? this.videoTags;
     return o;
   }
 }

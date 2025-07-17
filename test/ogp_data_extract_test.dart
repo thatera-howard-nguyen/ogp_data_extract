@@ -17,7 +17,7 @@ void main() {
     expect(ogpData.description,
         'Pub is the package manager for the Dart programming language, containing reusable libraries & packages for Flutter and general Dart programs.');
     expect(ogpData.image,
-        'https://pub.dev/static/hash-smmb6j0s/img/pub-dev-icon-cover-image.png');
+        'https://pub.dev/static/hash-2903vt9p/img/pub-dev-icon-cover-image.png');
     expect(ogpData.siteName, 'Dart packages');
   });
 
@@ -57,4 +57,44 @@ void main() {
     expect(ogpData.image,
         'https://pbs.twimg.com/tweet_video_thumb/FGII52MVkAQN-Sj.jpg:large');
   });
+
+  test('Parse static HTML with OG tags', () {
+    const String html = '''
+    <html>
+      <head>
+        <meta property="og:url" content="https://example.com/article/123" />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content="Example Article Title" />
+        <meta property="og:description" content="This is an example article description." />
+        <meta property="og:image" content="https://example.com/image.jpg" />
+        <meta property="og:site_name" content="Example Site" />
+        <meta property="article:tag" content="flutter" />
+        <meta property="article:tag" content="dart" />
+        <meta property="video:tag" content="tutorial" />
+        <meta property="book:tag" content="programming" />
+      </head>
+      <body>
+        <h1>Example Article</h1>
+      </body>
+    </html>
+    ''';
+
+    final document = _toDocumentFromString(html);
+    final ogpData = OgpDataParser(document).parse();
+
+    expect(ogpData.url, 'https://example.com/article/123');
+    expect(ogpData.type, 'article');
+    expect(ogpData.title, 'Example Article Title');
+    expect(ogpData.description, 'This is an example article description.');
+    expect(ogpData.image, 'https://example.com/image.jpg');
+    expect(ogpData.siteName, 'Example Site');
+
+    expect(ogpData.articleTags, containsAll(['flutter', 'dart']));
+    expect(ogpData.videoTags, contains('tutorial'));
+    expect(ogpData.bookTags, contains('programming'));
+  });
+}
+
+Document _toDocumentFromString(String html) {
+  return Document.html(html);
 }
